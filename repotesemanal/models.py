@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Catedratico(models.Model):
@@ -8,20 +9,37 @@ class Catedratico(models.Model):
     nombres = models.CharField(max_length=100)
     activo = models.BooleanField(blank=True, default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.nombres
-#DateField
+
+  # validaciones personalizadas  
+def nro_semana_validate(value):
+    if not value:
+        raise ValidationError('Nro de semana es obligatirio')
+    if value <0 or value > 52:
+        raise ValidationError('El numero de semana debe serun valor entre 1 y 52')
+# validaciones personalizadas
+def catedratico_activo_validate(value):
+    catedratico = Catedratico.objects.filter(id=value)
+    activo = catedratico[0].activo 
+    if activo == False:
+        raise ValidationError('El catedratico activo no esta ACTIVO')
+    
+
 class Reporte_semanal(models.Model):
-     catedratico = models.ForeignKey(Catedratico, on_delete=models.CASCADE)
+     catedratico = models.ForeignKey(Catedratico, on_delete=models.CASCADE, validators=[catedratico_activo_validate])
      fecha_entrega = models.DateTimeField(auto_now_add=True)
-     nro_semana = models.IntegerField()
-#     def __str__(self):
-#        return self.fecha_entrega
+     nro_semana = models.IntegerField(validators=[nro_semana_validate])
+     
+     def clean(self):
+         if self.nro_semana==0:
+            raise ValidationError('Nro semana no puede ser nulo')
+
     
 class Materia(models.Model):
-    materia = models.CharField(max_length=200)
-    codigo_materia = models.CharField(max_length=10)
+    materia = models.CharField(max_length=200, unique=True)
+    codigo_materia = models.CharField(max_length=10, unique=True)
     def __str__(self):
         return self.materia
     

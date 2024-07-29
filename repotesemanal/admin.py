@@ -11,7 +11,7 @@ from .models import Reporte_semanal
 Catedratico
 """
 class CatedraticoAdmin(admin.ModelAdmin):
-    list_display = ("id","paterno","materno","nombres")
+    list_display = ("id","paterno","materno","nombres","activo")
     ordering=["paterno"]
     search_fields=["paterno"]
     
@@ -46,5 +46,10 @@ class ContenidoAdmin(admin.ModelAdmin):
    
 admin.site.register(Contenido, ContenidoAdmin)
 
-admin.site.register(Reporte_semanal)
+class Reporte_semanalAdmin(admin.ModelAdmin):
+    list_display = ("id","fecha_entrega","nro_semana","catedratico_id")
+    ordering = ["fecha_entrega"]
+    search_fields=["nro_semana"]
+
+admin.site.register(Reporte_semanal, Reporte_semanalAdmin)
 

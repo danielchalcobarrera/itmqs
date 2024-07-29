@@ -69,17 +69,17 @@ def catedraticos_count(request):
 @api_view(["GET"])       
 def reporte_avances_catedratico(request,ci):
         """
-            Lista de catedratico y sus reportes de avance por semanas
+            Lista de  un catedratico y sus reportes de avance por semanas
         """ 
         print (ci)
         try:
             catedratico = Catedratico.objects.filter(cedula_identidad__contains=ci)
-            id_catedratico = catedratico[0].id 
-            reporte_semanal  =Reporte_semanal.objects.filter(catedratico_id=1)
+            idCatedratico = catedratico[0].id 
+            reporte_semanal  =Reporte_semanal.objects.filter(catedratico_id=idCatedratico)
             
             #ci = Catedratico.objects.count()  filter(catedratico_id=1)
             print("id_catedratico:")
-            print (id_catedratico)
+            print (idCatedratico)
             print("reporte_semanal:")
             print  (reporte_semanal)
             
